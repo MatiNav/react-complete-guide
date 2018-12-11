@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './Person.css';
+import classes from './Person.css';
 
 const Person = props => {
   console.log(props);
   const { age, name, children, click, changed } = props;
-  const style = {
-    '@media(min-widht: 500)': {
-      widht: '450px'
-    }
-  };
 
   return (
-    <div className="Person" style={style}>
+    <div className={classes.Person}>
       <h1 onClick={click}>
         Hi i'm {name} and I am
         {age}

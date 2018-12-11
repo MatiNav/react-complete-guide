@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
-import './App.css';
+// con la modificacion que hicimos (lectura 67, con modificaciones en la 66) => ahora las clases aplican solo a donde la importas
+import classes from './App.css';
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
   state = {
@@ -40,7 +42,7 @@ class App extends Component {
   };
 
   nameChangeHandler = (event, id) => {
-    const personIndex = this.state.persons.findIndex(p => p.id === id);
+    const personIndex = this.state.persons.findIndex(p => p.userId === id);
     const personCopy = { ...this.state.persons[personIndex] }; // para no manipular el state
 
     personCopy.name = event.target.value;
@@ -75,53 +77,48 @@ class App extends Component {
   };
 
   render() {
-    const style = {
-      backgroundColor: 'red',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
-
     let persons = null;
+    let btnClass = '';
 
     if (this.state.showPersons) {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
             return (
-              <Person
-                click={() => this.deletePerson(index)}
-                name={person.name}
-                age={person.age}
-                key={person.id}
-                changed={event => this.nameChangeHandler(event, person.id)}
-              />
+              <ErrorBoundary key={person.id}>
+                <Person
+                  click={() => this.deletePerson(index)}
+                  name={person.name}
+                  age={person.age}
+                  changed={event => this.nameChangeHandler(event, person.id)}
+                />
+              </ErrorBoundary>
             );
           })}
         </div>
       );
 
-      style.backgroundColor = 'green';
-      style[':hover'] = {
-        color: 'white',
-        backgroundColor: 'red'
-      };
+      btnClass = classes.Red;
     }
 
-    const classes = [];
+    const assignedClasses = [];
     if (this.state.persons.length <= 2) {
-      classes.push('red');
+      assignedClasses.push(classes.red);
     }
     if (this.state.persons.length <= 1) {
-      classes.push('bold');
+      assignedClasses.push(classes.bold);
     }
 
+    // para lo de ErrorBoundary
+    // const rnd = Math.random();
+    // if (rnd > 0.7) {
+    //   throw new Error('Something went wrong');
+    // }
+
     return (
-      <div className="App">
-        <p className={classes.join(' ')}>Hi i'm a React App</p>
-        <button style={style} onClick={this.togglePersonsHandler}>
+      <div className={classes.App}>
+        <p className={assignedClasses.join(' ')}>Hi i'm a React App</p>
+        <button className={btnClass} onClick={this.togglePersonsHandler}>
           Toggle Person
         </button>
         {persons}
@@ -131,18 +128,3 @@ class App extends Component {
 }
 
 export default App;
-
-// {
-//   test: cssRegex,
-//   exclude: cssModuleRegex,
-//   use: getStyleLoaders({
-//       importLoaders: 1,
-//       modules: true,
-//       localIdentName: '[name]__[local]__[hash:base64:5]'
-//   }),
-// // Don't consider CSS imports dead code even if the
-// // containing package claims to have no side effects.
-// // Remove this when webpack adds a warning or an error for this.
-// // See https://github.com/webpack/webpack/issues/6571
-//   sideEffects: true,
-// },

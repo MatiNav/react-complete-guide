@@ -6,9 +6,8 @@
   text-align: center;
   color: red;
 }
-
-/* @media (min-width: 500px) {
+@media (min-width: 500px) {
   .Person {
-    width: 45px;
+    width: 450px;
   }
-} */
+}
